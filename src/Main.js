@@ -25,6 +25,55 @@ const Main = () => {
         desc: '', // Pokémon description
     });
 
+    const getTypes = (types) =>
+        types.map(({ slot, type }) => ({
+            id: slot,
+            name: type.name,
+        }));
+
+    const getDescription = (entries) =>
+        entries.find((item) => item.language.name === 'en').flavor_text;
+
+    const searchPokemon = async () => {
+        try {
+            const pokemonID = pokemon.getId(state.searchInput); // check if the entered Pokémon name is valid
+            // console.log(pokemonID);
+
+            setState({
+                ...state,
+                isLoading: true, // show the loader while request is being performed
+            });
+    
+            const { data: pokemonData } = await axios.get(
+                `${POKE_API_BASE_URL}/pokemon/${pokemonID}`
+            );
+            const { data: pokemonSpecieData } = await axios.get(
+                `${POKE_API_BASE_URL}/pokemon-species/${pokemonID}`
+            );
+            
+            const { name, sprites, types } = pokemonData;
+            const { flavor_text_entries } = pokemonSpecieData;
+
+            setState({
+                ...state,
+                name,
+                pic: sprites.front_default,
+                types: getTypes(types),
+                desc: getDescription(flavor_text_entries),
+                isLoading: false, // hide loader
+            });
+        } catch (err) {
+            console.log(err);
+            Alert.alert('Error', 'Pokémon not found');
+            setState({
+                ...state,
+                isLoading: false, // hide loader
+            });
+        }
+    };
+
+    // console.log(state);
+
     return (
         <SafeAreaView style={styles.wrapper}>
             <View style={styles.container}>
@@ -36,7 +85,7 @@ const Main = () => {
                                 setState({
                                     ...state,
                                     searchInput
-                                })
+                                });
                             }}
                             value={state.searchInput}
                             placeholder="Search Pokémon"
@@ -44,7 +93,7 @@ const Main = () => {
                     </View>
                     <View style={styles.buttonContainer}>
                         <Button
-                            // onPress={this.searchPokemon}
+                            onPress={searchPokemon}
                             title="Search"
                             color="#0064e1"
                         />
