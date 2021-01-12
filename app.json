@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "pokemon-search-react-native",
+    "name": "Pokemon Search",
     "slug": "pokemon-search-react-native",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,7 +8,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0070FF"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
